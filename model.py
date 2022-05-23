@@ -24,4 +24,9 @@ class Discriminator(nn.Module):
 
 
     def forward(self, x):
-        pass
+        return self.disc(x)
+
+class Generator(nn.Module):
+
+    def __init__(self, z_dim, channels_img, features_g):
+        super(Generator, self).__init__()
