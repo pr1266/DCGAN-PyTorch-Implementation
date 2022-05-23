@@ -53,3 +53,14 @@ def initialize_weights(model):
     for m in model.modules():
         if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
+
+
+def test():
+    N, in_channels, H, W = 8, 3, 64, 64
+    z_dim = 100
+    x = torch.randn((N, in_channels, H, W))
+    disc = Discriminator(in_channels, 8)
+    initialize_weights(disc)
+    assert disc(x).shape == (N, 1, 1, 1)
+
+test()
