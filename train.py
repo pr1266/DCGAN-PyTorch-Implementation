@@ -28,7 +28,8 @@ transforms = transforms.Compose(
     ]
 )
 
-dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
+# dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
+dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 gen = Generator(NOISE_DIM, CHANNELS_IMG, FEATURES_GEN).to(device)
 disc = Discriminator(CHANNELS_IMG, FEATURES_DISC).to(device)
