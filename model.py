@@ -30,7 +30,7 @@ class Generator(nn.Module):
 
     def __init__(self, z_dim, channels_img, features_g):
         super(Generator, self).__init__()
-        self.net = nn.Sequential(
+        self.gen = nn.Sequential(
             #! input shape: Batch size * z_dim * 1 * 1
             self._block(z_dim, features_g*16, 4, 1, 0), #! N * f_g * 16 * 4 * 4
             self._block(features_g*16, features_g*8, 4, 2, 1), #! 8 * 8
@@ -47,20 +47,24 @@ class Generator(nn.Module):
             nn.ReLU(),
         )
 
+    def forward(self, x):
+        return self.gen(x)
+
 def initialize_weights(model):
     #! Initializes weights according to the DCGAN paper
-    #! ke oonja gofte ba normal distribution initialize anjam shode
+    #! ke oonja (too paper) gofte ba normal distribution initialize anjam shode
     for m in model.modules():
         if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
-
 
 def test():
     N, in_channels, H, W = 8, 3, 64, 64
     z_dim = 100
     x = torch.randn((N, in_channels, H, W))
     disc = Discriminator(in_channels, 8)
-    initialize_weights(disc)
-    assert disc(x).shape == (N, 1, 1, 1)
+    assert disc(x).shape == (N, 1, 1, 1), "Discriminator test failed"
+    gen = Generator(z_dim, in_channels, 8)
+    z = torch.randn((N, z_dim, 1, 1))
+    assert gen(z).shape == (N, in_channels, H, W), "Generator test failed"
 
 test()
