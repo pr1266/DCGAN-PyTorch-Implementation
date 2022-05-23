@@ -28,3 +28,18 @@ transforms = transforms.Compose(
     ]
 )
 
+dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
+dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+gen = Generator(NOISE_DIM, CHANNELS_IMG, FEATURES_GEN).to(device)
+disc = Discriminator(CHANNELS_IMG, FEATURES_DISC).to(device)
+initialize_weights(gen)
+initialize_weights(disc)
+
+opt_gen = optim.Adam(gen.parameters(), lr=LEARNING_RATE, betas=(0.5, 0.999))
+opt_disc = optim.Adam(disc.parameters(), lr=LEARNING_RATE, betas=(0.5, 0.999))
+criterion = nn.BCELoss()
+
+fixed_noise = torch.randn(32, NOISE_DIM, 1, 1).to(device)
+writer_real = SummaryWriter(f"logs/real")
+writer_fake = SummaryWriter(f"logs/fake")
+step = 0
